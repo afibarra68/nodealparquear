@@ -1,6 +1,13 @@
+# Imágenes con etiqueta fija + pull_policy evitan cambios silenciosos al cada `up`.
+# `build.pull: false` evita que cada build vuelva a bajar la base `FROM` del Dockerfile.
+name: nodealparquear
+
 services:
   api:
-    build: .
+    build:
+      context: .
+      pull: false
+    image: nodealparquear-api:local
     container_name: nodealparquear_api
     restart: unless-stopped
     ports:
@@ -17,7 +24,8 @@ services:
       - monitoring
 
   prometheus:
-    image: prom/prometheus:latest
+    image: prom/prometheus:v2.55.1
+    pull_policy: if_not_present
     container_name: prometheus
     restart: always
     volumes:
@@ -28,7 +36,8 @@ services:
       - monitoring
 
   grafana:
-    image: grafana/grafana:latest
+    image: grafana/grafana:11.4.2
+    pull_policy: if_not_present
     container_name: grafana
     restart: always
     ports:

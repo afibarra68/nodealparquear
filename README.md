@@ -34,6 +34,72 @@ Ajustá el `git add` si falta o sobra alguna ruta en tu árbol (por ejemplo si n
 
 ---
 
+## Bases de datos (PostgreSQL) — checklist
+
+El **`docker-compose.yml` de este repo no levanta Postgres** (solo API + Prometheus + Grafana). Necesitás una instancia de **PostgreSQL** accesible en el host que indiques en **`DATABASE_URL`** (típicamente puerto **5432**).
+
+### Opción A: Postgres solo con Docker (útil para el sábado / dev)
+
+**Git Bash / macOS / Linux:**
+
+```bash
+docker run -d --name postgres-dev \
+  -e POSTGRES_USER=admin \
+  -e POSTGRES_PASSWORD=telodijecomma \
+  -e POSTGRES_DB=appdb \
+  -p 5432:5432 \
+  -v nodealparquear_pgdata:/var/lib/postgresql/data \
+  postgres:15
+```
+
+**PowerShell (Windows):**
+
+```powershell
+docker run -d --name postgres-dev `
+  -e POSTGRES_USER=admin `
+  -e POSTGRES_PASSWORD=telodijecomma `
+  -e POSTGRES_DB=appdb `
+  -p 5432:5432 `
+  -v nodealparquear_pgdata:/var/lib/postgresql/data `
+  postgres:15
+```
+
+Comprobar que arrancó:
+
+```bash
+docker ps
+docker exec postgres-dev pg_isready -U admin -d appdb
+```
+
+En **`.env`** (partiendo de **`.env.example`**), por ejemplo:
+
+```env
+DATABASE_URL="postgresql://admin:telodijecomma@localhost:5432/appdb?schema=public"
+DATABASE_URL_DOCKER="postgresql://admin:telodijecomma@host.docker.internal:5432/appdb?schema=public"
+```
+
+Si el contenedor ya existía y querés empezar de cero: `docker rm -f postgres-dev` y borrá el volumen `nodealparquear_pgdata` solo si aceptás perder datos.
+
+### Opción B: Postgres instalado en Windows
+
+Servicio local en **5432** (o el puerto que uses). Creá base y usuario con **pgAdmin** o `psql`. Misma idea de `DATABASE_URL` con **`localhost`**.
+
+### Opción C: Misma base que el monolito Java (`parking-app` / Flyway)
+
+Apuntá **`DATABASE_URL`** a esa instancia y base. **No** ejecutes `prisma migrate deploy` contra un esquema ya gobernado por Flyway salvo que lo hayas coordinado; para alinear modelos suele bastar **`npx prisma db pull`**.
+
+### Cuando Postgres ya responde
+
+```bash
+cd nodealparquear
+npm install
+npm run prisma:generate
+```
+
+Solo si esta base usa **migraciones Prisma** de este repo: `npm run prisma:migrate:deploy`. Luego **`npm run start:dev`** en el host, o **`docker compose up -d --build api`** si la API va en Docker (con **`DATABASE_URL_DOCKER`** si Postgres está en el host).
+
+---
+
 ## Puesta en marcha
 
 ```bash
