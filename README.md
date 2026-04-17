@@ -2,6 +2,28 @@
 
 API backend **AlParquear** en **NestJS 11** y **TypeScript**, pensada para convivir o sustituir progresivamente el monolito Java (`parking-app`) manteniendo rutas y contratos orientados a paridad. Persistencia con **PostgreSQL** vía **Prisma**.
 
+Los metadatos npm (**nombre**, **versión**, **scripts**, **dependencias**, **licencia**) están en **`package.json`** en la raíz de esta carpeta.
+
+### Git: qué sí debe ir en el commit
+
+Para que el clon sea reproducible y no falten archivos al compilar:
+
+- **`package.json`** y **`package-lock.json`**
+- **`nest-cli.json`**, **`tsconfig.json`**, **`tsconfig.build.json`**
+- **`prisma/schema.prisma`** y **`prisma/migrations/`** (si usás Prisma Migrate)
+- **`src/`**, **`test/`**, **`README.md`**, **`.env.example`**, **`.gitignore`**
+
+No subas **`.env`** (secretos), **`node_modules/`** ni **`dist/`** (ignorados por `.gitignore`).
+
+```bash
+cd nodealparquear
+git add package.json package-lock.json nest-cli.json tsconfig.json tsconfig.build.json .env.example .gitignore README.md prisma src test
+git status
+git commit -m "chore(nodealparquear): archivos de proyecto y lockfile"
+```
+
+Ajustá el `git add` si falta o sobra alguna ruta en tu árbol (por ejemplo si no existe `prisma/` todavía).
+
 ---
 
 ## Requisitos
@@ -21,7 +43,7 @@ npm install
 
 ### Variables de entorno
 
-Creá un archivo `.env` en la raíz de `nodealparquear` (no lo subas al repositorio). La carga y validación ocurren al arrancar con `ConfigModule` y **Zod** (`src/config/env/root-env.schema.ts`).
+Podés partir de **`.env.example`**: copialo a `.env` y completá los valores. No subas `.env` al repositorio. La carga y validación ocurren al arrancar con `ConfigModule` y **Zod** (`src/config/env/root-env.schema.ts`).
 
 | Variable       | Obligatoria | Descripción |
 |----------------|-------------|-------------|

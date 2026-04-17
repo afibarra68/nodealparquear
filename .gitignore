@@ -1,4 +1,21 @@
-node_modules
-
-# Salida de compilación Nest (`npm run build`)
+# Dependencias y build (no versionar)
+node_modules/
 dist/
+
+# Secretos y entorno local (sí versionar .env.example)
+.env
+.env.local
+.env.*.local
+
+# Tests / cobertura
+coverage/
+
+# SO / IDE
+.DS_Store
+Thumbs.db
+
+# --- Sí deben quedar en Git (no agregar reglas que los ignoren) ---
+# package.json, package-lock.json
+# nest-cli.json, tsconfig.json, tsconfig.build.json
+# prisma/schema.prisma, prisma/migrations/
+# src/, test/, README.md, .env.example
