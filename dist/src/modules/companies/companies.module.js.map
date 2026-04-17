@@ -1,0 +1,1 @@
+{"version":3,"file":"companies.module.js","sourceRoot":"","sources":["../../../../src/modules/companies/companies.module.ts"],"names":[],"mappings":";;;;;;;;;AAAA,2CAAwC;AACxC,wGAAmG;AACnG,wIAAiI;AACjI,gIAAyH;AASlH,IAAM,eAAe,GAArB,MAAM,eAAe;CAAG,CAAA;AAAlB,0CAAe;0BAAf,eAAe;IAP3B,IAAA,eAAM,EAAC;QACN,WAAW,EAAE;YACX,mEAA+B;YAC/B,iGAA6C;YAC7C,yFAAyC;SAC1C;KACF,CAAC;GACW,eAAe,CAAG"}
