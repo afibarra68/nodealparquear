@@ -9,7 +9,7 @@ export class CountriesPresentationController extends ParkingParityBaseController
     super(migration);
   }
 
-  @All(':path*')
+  @All('*path')
   handle(@Req() req: Request): never {
     return this.reject(`CountriesPresentationController ${req.method} ${req.originalUrl}`);
   }

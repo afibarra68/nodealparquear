@@ -9,7 +9,7 @@ export class TipoVehiculoPresentationController extends ParkingParityBaseControl
     super(migration);
   }
 
-  @All(':path*')
+  @All('*path')
   handle(@Req() req: Request): never {
     return this.reject(`TipoVehiculoPresentationController ${req.method} ${req.originalUrl}`);
   }

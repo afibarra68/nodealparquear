@@ -9,7 +9,7 @@ export class SubscriptionHistoryStatusPresentationController extends ParkingPari
     super(migration);
   }
 
-  @All(':path*')
+  @All('*path')
   handle(@Req() req: Request): never {
     return this.reject(`SubscriptionHistoryStatusPresentationController ${req.method} ${req.originalUrl}`);
   }

@@ -9,7 +9,7 @@ export class UserPrintersPresentationController extends ParkingParityBaseControl
     super(migration);
   }
 
-  @All(':path*')
+  @All('*path')
   handle(@Req() req: Request): never {
     return this.reject(`UserPrintersPresentationController ${req.method} ${req.originalUrl}`);
   }

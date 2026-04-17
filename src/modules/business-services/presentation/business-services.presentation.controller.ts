@@ -9,7 +9,7 @@ export class BusinessServicesPresentationController extends ParkingParityBaseCon
     super(migration);
   }
 
-  @All(':path*')
+  @All('*path')
   handle(@Req() req: Request): never {
     return this.reject(`BusinessServicesPresentationController ${req.method} ${req.originalUrl}`);
   }

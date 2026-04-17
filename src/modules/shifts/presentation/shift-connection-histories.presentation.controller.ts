@@ -9,7 +9,7 @@ export class ShiftConnectionHistoriesPresentationController extends ParkingParit
     super(migration);
   }
 
-  @All(':path*')
+  @All('*path')
   handle(@Req() req: Request): never {
     return this.reject(`ShiftConnectionHistoriesPresentationController ${req.method} ${req.originalUrl}`);
   }

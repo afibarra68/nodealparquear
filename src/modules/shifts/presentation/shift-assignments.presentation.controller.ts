@@ -9,7 +9,7 @@ export class ShiftAssignmentsPresentationController extends ParkingParityBaseCon
     super(migration);
   }
 
-  @All(':path*')
+  @All('*path')
   handle(@Req() req: Request): never {
     return this.reject(`ShiftAssignmentsPresentationController ${req.method} ${req.originalUrl}`);
   }

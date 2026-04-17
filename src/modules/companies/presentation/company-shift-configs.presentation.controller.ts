@@ -9,7 +9,7 @@ export class CompanyShiftConfigsPresentationController extends ParkingParityBase
     super(migration);
   }
 
-  @All(':path*')
+  @All('*path')
   handle(@Req() req: Request): never {
     return this.reject(`CompanyShiftConfigsPresentationController ${req.method} ${req.originalUrl}`);
   }

@@ -53,7 +53,7 @@ export class ${className} extends ParkingParityBaseController {
     super(migration);
   }
 
-  @All(':path*')
+  @All('*path')
   handle(@Req() req: Request): never {
     return this.reject(\`${className} \${req.method} \${req.originalUrl}\`);
   }

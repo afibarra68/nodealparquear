@@ -9,7 +9,7 @@ export class TicketTemplatesPresentationController extends ParkingParityBaseCont
     super(migration);
   }
 
-  @All(':path*')
+  @All('*path')
   handle(@Req() req: Request): never {
     return this.reject(`TicketTemplatesPresentationController ${req.method} ${req.originalUrl}`);
   }

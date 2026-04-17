@@ -9,7 +9,7 @@ export class DestinationClientPresentationController extends ParkingParityBaseCo
     super(migration);
   }
 
-  @All(':path*')
+  @All('*path')
   handle(@Req() req: Request): never {
     return this.reject(`DestinationClientPresentationController ${req.method} ${req.originalUrl}`);
   }

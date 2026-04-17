@@ -9,7 +9,7 @@ export class BillingPricesPresentationController extends ParkingParityBaseContro
     super(migration);
   }
 
-  @All(':path*')
+  @All('*path')
   handle(@Req() req: Request): never {
     return this.reject(`BillingPricesPresentationController ${req.method} ${req.originalUrl}`);
   }

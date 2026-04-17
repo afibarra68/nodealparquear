@@ -9,7 +9,7 @@ export class PosPresentationController extends ParkingParityBaseController {
     super(migration);
   }
 
-  @All(':path*')
+  @All('*path')
   handle(@Req() req: Request): never {
     return this.reject(`PosPresentationController ${req.method} ${req.originalUrl}`);
   }

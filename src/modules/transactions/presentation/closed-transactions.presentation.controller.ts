@@ -9,7 +9,7 @@ export class ClosedTransactionsPresentationController extends ParkingParityBaseC
     super(migration);
   }
 
-  @All(':path*')
+  @All('*path')
   handle(@Req() req: Request): never {
     return this.reject(`ClosedTransactionsPresentationController ${req.method} ${req.originalUrl}`);
   }

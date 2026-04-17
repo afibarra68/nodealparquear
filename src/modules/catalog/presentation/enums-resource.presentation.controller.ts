@@ -9,7 +9,7 @@ export class EnumsResourcePresentationController extends ParkingParityBaseContro
     super(migration);
   }
 
-  @All(':path*')
+  @All('*path')
   handle(@Req() req: Request): never {
     return this.reject(`EnumsResourcePresentationController ${req.method} ${req.originalUrl}`);
   }
