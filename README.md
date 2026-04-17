@@ -34,6 +34,72 @@ Ajustá el `git add` si falta o sobra alguna ruta en tu árbol (por ejemplo si n
 
 ---
 
+## Bases de datos (PostgreSQL) — checklist
+
+El **`docker-compose.yml` de este repo no levanta Postgres** (solo API + Prometheus + Grafana). Necesitás una instancia de **PostgreSQL** accesible en el host que indiques en **`DATABASE_URL`** (típicamente puerto **5432**).
+
+### Opción A: Postgres solo con Docker (útil para el sábado / dev)
+
+**Git Bash / macOS / Linux:**
+
+```bash
+docker run -d --name postgres-dev \
+  -e POSTGRES_USER=admin \
+  -e POSTGRES_PASSWORD=telodijecomma \
+  -e POSTGRES_DB=appdb \
+  -p 5432:5432 \
+  -v nodealparquear_pgdata:/var/lib/postgresql/data \
+  postgres:15
+```
+
+**PowerShell (Windows):**
+
+```powershell
+docker run -d --name postgres-dev `
+  -e POSTGRES_USER=admin `
+  -e POSTGRES_PASSWORD=telodijecomma `
+  -e POSTGRES_DB=appdb `
+  -p 5432:5432 `
+  -v nodealparquear_pgdata:/var/lib/postgresql/data `
+  postgres:15
+```
+
+Comprobar que arrancó:
+
+```bash
+docker ps
+docker exec postgres-dev pg_isready -U admin -d appdb
+```
+
+En **`.env`** (partiendo de **`.env.example`**), por ejemplo:
+
+```env
+DATABASE_URL="postgresql://admin:telodijecomma@localhost:5432/appdb?schema=public"
+DATABASE_URL_DOCKER="postgresql://admin:telodijecomma@host.docker.internal:5432/appdb?schema=public"
+```
+
+Si el contenedor ya existía y querés empezar de cero: `docker rm -f postgres-dev` y borrá el volumen `nodealparquear_pgdata` solo si aceptás perder datos.
+
+### Opción B: Postgres instalado en Windows
+
+Servicio local en **5432** (o el puerto que uses). Creá base y usuario con **pgAdmin** o `psql`. Misma idea de `DATABASE_URL` con **`localhost`**.
+
+### Opción C: Misma base que el monolito Java (`parking-app` / Flyway)
+
+Apuntá **`DATABASE_URL`** a esa instancia y base. **No** ejecutes `prisma migrate deploy` contra un esquema ya gobernado por Flyway salvo que lo hayas coordinado; para alinear modelos suele bastar **`npx prisma db pull`**.
+
+### Cuando Postgres ya responde
+
+```bash
+cd nodealparquear
+npm install
+npm run prisma:generate
+```
+
+Solo si esta base usa **migraciones Prisma** de este repo: `npm run prisma:migrate:deploy`. Luego **`npm run start:dev`** en el host, o **`docker compose up -d --build api`** si la API va en Docker (con **`DATABASE_URL_DOCKER`** si Postgres está en el host).
+
+---
+
 ## Puesta en marcha
 
 ```bash
@@ -137,9 +203,9 @@ Incluyen entre otros: `Auth`, `Users`, `Companies`, `Catalog`, `Clients`, `Trans
 
 Muchos controladores extienden **`ParkingParityBaseController`** (`src/common/migration/parking-parity.base-controller.ts`) e inyectan **`UnmigratedFeaturePolicy`**: mientras un flujo siga delegado en Java, las rutas pueden responder **501 Not Implemented** con un cuerpo JSON que incluye `code: MIGRATION_PENDING` y un `operationKey` descriptivo (por ejemplo la ruta equivalente en el monolito).
 
-- **`AuthApplicationService`:** login, validación de token y cambio de contraseña siguen esa política; **`POST /auth/logout`** no lanza error (el cliente invalida el token localmente, alineado con el comportamiento descrito en código).
+- **`Auth`:** `POST /auth/login` y `POST /auth/login-sell` emiten JWT (ver `.env.example`: `JWT_SECRET`, `JWT_EXPIRES_SEC`). Capas: DTOs en `presentation/dto/`, tipos de dominio en `domain/`, puerto `AuthUserReadPort` e implementación Prisma en `infrastructure/prisma-auth-user.repository.ts`. El modelo **`User`** en `prisma/schema.prisma` mapea `users.password` → `passwordHash`; si tu esquema Flyway difiere, ejecutá **`npx prisma db pull`** y ajustá el modelo. `GET /auth/validate` y `POST /auth/change-password` requieren header **`Authorization: Bearer <token>`**. **`POST /auth/logout`** sigue siendo no-op en servidor.
 
-Cuando implementes un caso de uso real en Node, reemplazá las llamadas a `deny()` por la lógica correspondiente y ajustá pruebas.
+Cuando otros módulos sigan en Java, seguirán usando `UnmigratedFeaturePolicy.deny()` hasta migrarlos.
 
 ### Integración
 
@@ -164,6 +230,26 @@ Los e2e de ejemplo (`test/app.e2e-spec.ts`) sustituyen **`PrismaService`** por *
 ```bash
 npm run lint
 npm run format
+```
+
+---
+
+## Docker (API + Prometheus + Grafana)
+
+En la raíz de `nodealparquear` está **`docker-compose.yml`**: servicio **`api`** (imagen desde el **`Dockerfile`**, puerto host **8080** → contenedor **3000**), **Prometheus** (`prometheus.yml`, **9090**) y **Grafana** (**3000**). Si Postgres corre en tu máquina, en **`.env`** definí **`DATABASE_URL_DOCKER`** con host **`host.docker.internal`** (misma URL que en local pero sin `localhost`); Compose usa eso en el servicio `api` y **`DATABASE_URL`** seguís usándola para `npm run start:dev` en el host.
+
+- **API:** [http://localhost:8080](http://localhost:8080) — health: `GET /health`, métricas: `GET /metrics`
+- **Grafana:** [http://localhost:3000](http://localhost:3000)
+- **Prometheus:** [http://localhost:9090](http://localhost:9090)
+- En Grafana, datasource Prometheus: URL `http://prometheus:9090`
+
+En **`.env`**: **`DATABASE_URL`** (local) y opcional **`DATABASE_URL_DOCKER`** (Compose; si no existe, se usa `DATABASE_URL`). El **`Dockerfile`** usa **`docker-entrypoint.sh`**: si hay `prisma/migrations`, ejecuta `prisma migrate deploy` y luego `node dist/main.js`. Para saltar migraciones: `SKIP_PRISMA_MIGRATE=1` en el servicio `api`.
+
+Levantar:
+
+```bash
+cd nodealparquear
+docker compose up -d --build
 ```
 
 ---
