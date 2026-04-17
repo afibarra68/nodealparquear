@@ -137,9 +137,9 @@ Incluyen entre otros: `Auth`, `Users`, `Companies`, `Catalog`, `Clients`, `Trans
 
 Muchos controladores extienden **`ParkingParityBaseController`** (`src/common/migration/parking-parity.base-controller.ts`) e inyectan **`UnmigratedFeaturePolicy`**: mientras un flujo siga delegado en Java, las rutas pueden responder **501 Not Implemented** con un cuerpo JSON que incluye `code: MIGRATION_PENDING` y un `operationKey` descriptivo (por ejemplo la ruta equivalente en el monolito).
 
-- **`AuthApplicationService`:** login, validación de token y cambio de contraseña siguen esa política; **`POST /auth/logout`** no lanza error (el cliente invalida el token localmente, alineado con el comportamiento descrito en código).
+- **`Auth`:** `POST /auth/login` y `POST /auth/login-sell` emiten JWT (ver `.env.example`: `JWT_SECRET`, `JWT_EXPIRES_SEC`). Capas: DTOs en `presentation/dto/`, tipos de dominio en `domain/`, puerto `AuthUserReadPort` e implementación Prisma en `infrastructure/prisma-auth-user.repository.ts`. El modelo **`User`** en `prisma/schema.prisma` mapea `users.password` → `passwordHash`; si tu esquema Flyway difiere, ejecutá **`npx prisma db pull`** y ajustá el modelo. `GET /auth/validate` y `POST /auth/change-password` requieren header **`Authorization: Bearer <token>`**. **`POST /auth/logout`** sigue siendo no-op en servidor.
 
-Cuando implementes un caso de uso real en Node, reemplazá las llamadas a `deny()` por la lógica correspondiente y ajustá pruebas.
+Cuando otros módulos sigan en Java, seguirán usando `UnmigratedFeaturePolicy.deny()` hasta migrarlos.
 
 ### Integración
 
