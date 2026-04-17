@@ -39,7 +39,18 @@ Ajustá el `git add` si falta o sobra alguna ruta en tu árbol (por ejemplo si n
 ```bash
 cd nodealparquear
 npm install
+npm run prisma:generate
 ```
+
+**Build y arranque:** el proyecto usa **`tsc`** para compilar (`npm run build`) y **`tsx watch`** en desarrollo (`npm run start:dev`) para evitar depender del binario `nest` cuando el CLI falla por dependencias rotas de `@angular-devkit` en el entorno.
+
+**Stubs de paridad con Java:** tras cambiar la lista de controladores en `scripts/emit-parity-stubs.mjs`, regenerá los controladores 501 con:
+
+```bash
+npm run codegen:parity
+```
+
+Si **Jest** o **Nest CLI** fallan con `MODULE_NOT_FOUND` dentro de `node_modules`, probá una instalación limpia: `rm -rf node_modules && npm ci` (o equivalente en Windows).
 
 ### Variables de entorno
 
