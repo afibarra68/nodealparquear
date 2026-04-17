@@ -175,4 +175,3 @@ El campo `license` en `package.json` es **`UNLICENSED`**: código de uso **priva
 
 **Titular del copyright (completar):** © 2026 *[A I F No Enterprise networks]*. Todos los derechos reservados salvo disposición expresa en contrato o licencia por escrito.
 
-**Sobre GPG:** generar una clave con `gpg --full-generate-key` no modifica el README ni la licencia; sirve para **firmar commits o tags** en Git (por ejemplo identidad verificada en el hosting). Para que tu nombre figure aquí, alcanza con editar la línea de copyright de arriba.
