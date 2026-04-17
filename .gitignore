@@ -1,1 +1,4 @@
 node_modules
+
+# Salida de compilación Nest (`npm run build`)
+dist/
