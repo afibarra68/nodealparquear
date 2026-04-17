@@ -1,0 +1,10 @@
+// Esquema mínimo: alinear modelos con Flyway (parking-app) o usar `prisma db pull` contra la BD existente.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
