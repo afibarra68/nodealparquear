@@ -171,4 +171,8 @@ Este proyecto vive junto a otros (por ejemplo `parking-app` en Spring Boot). El 
 
 ## Licencia
 
-`UNLICENSED` (uso privado del proyecto; revisá `package.json`).
+El campo `license` en `package.json` es **`UNLICENSED`**: código de uso **privado** (sin licencia pública de reutilización). Si el producto pasa a licencia abierta o a un contrato concreto, actualizá `package.json`, esta sección y, si aplica, un archivo `LICENSE` en la raíz del paquete.
+
+**Titular del copyright (completar):** © 2026 *[nombre o razón social]*. Todos los derechos reservados salvo disposición expresa en contrato o licencia por escrito.
+
+**Sobre GPG:** generar una clave con `gpg --full-generate-key` no modifica el README ni la licencia; sirve para **firmar commits o tags** en Git (por ejemplo identidad verificada en el hosting). Para que tu nombre figure aquí, alcanza con editar la línea de copyright de arriba.
