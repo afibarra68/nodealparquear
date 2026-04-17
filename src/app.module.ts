@@ -6,6 +6,7 @@ import { ApplicationValidationPipe } from './common/http/application-validation.
 import { MigrationPolicyModule } from './common/migration/migration-policy.module';
 import { RootEnvConfigAdapter } from './config/env/root-env-config.adapter';
 import { HealthModule } from './infrastructure/health/health.module';
+import { MetricsModule } from './infrastructure/metrics/metrics.module';
 import { PrismaModule } from './infrastructure/prisma/prisma.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { BillingModule } from './modules/billing/billing.module';
@@ -29,6 +30,7 @@ import { UsersModule } from './modules/users/users.module';
     }),
     PrismaModule,
     HealthModule,
+    MetricsModule,
     AuthModule,
     UsersModule,
     CompaniesModule,

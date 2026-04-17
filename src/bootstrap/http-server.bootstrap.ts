@@ -20,9 +20,9 @@ export class HttpServerBootstrap {
   private static resolvePort(): number {
     const raw = process.env.PORT;
     if (raw === undefined || raw === '') {
-      return 3000;
+      return 4001;
     }
     const n = Number.parseInt(raw, 10);
-    return Number.isNaN(n) ? 3000 : n;
+    return Number.isNaN(n) ? 4001 : n;
   }
 }

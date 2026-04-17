@@ -14,6 +14,9 @@ coverage/
 .DS_Store
 Thumbs.db
 
+# Docker Postgres local (compose)
+data/
+
 # --- Sí deben quedar en Git (no agregar reglas que los ignoren) ---
 # package.json, package-lock.json
 # nest-cli.json, tsconfig.json, tsconfig.build.json

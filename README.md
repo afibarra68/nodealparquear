@@ -168,6 +168,26 @@ npm run format
 
 ---
 
+## Docker (API + Prometheus + Grafana)
+
+En la raíz de `nodealparquear` está **`docker-compose.yml`**: servicio **`api`** (imagen desde el **`Dockerfile`**, puerto host **8080** → contenedor **3000**), **Prometheus** (`prometheus.yml`, **9090**) y **Grafana** (**3000**). Si Postgres corre en tu máquina, en **`.env`** definí **`DATABASE_URL_DOCKER`** con host **`host.docker.internal`** (misma URL que en local pero sin `localhost`); Compose usa eso en el servicio `api` y **`DATABASE_URL`** seguís usándola para `npm run start:dev` en el host.
+
+- **API:** [http://localhost:8080](http://localhost:8080) — health: `GET /health`, métricas: `GET /metrics`
+- **Grafana:** [http://localhost:3000](http://localhost:3000)
+- **Prometheus:** [http://localhost:9090](http://localhost:9090)
+- En Grafana, datasource Prometheus: URL `http://prometheus:9090`
+
+En **`.env`**: **`DATABASE_URL`** (local) y opcional **`DATABASE_URL_DOCKER`** (Compose; si no existe, se usa `DATABASE_URL`). El **`Dockerfile`** usa **`docker-entrypoint.sh`**: si hay `prisma/migrations`, ejecuta `prisma migrate deploy` y luego `node dist/main.js`. Para saltar migraciones: `SKIP_PRISMA_MIGRATE=1` en el servicio `api`.
+
+Levantar:
+
+```bash
+cd nodealparquear
+docker compose up -d --build
+```
+
+---
+
 ## Despliegue (notas breves)
 
 1. Definí `NODE_ENV=production`, `DATABASE_URL` y `PORT` en el entorno del proceso o del orquestador.
